@@ -1,4 +1,4 @@
-module mvn-pom-mutator
+module github.com/perottobc/mvn-pom-mutator
 
 go 1.14
 
