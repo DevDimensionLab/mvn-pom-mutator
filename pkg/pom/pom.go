@@ -64,7 +64,7 @@ type Model struct {
   IssueManagement *IssueManagement `xml:"issueManagement,omitempty"`
   CiManagement *CiManagement `xml:"ciManagement,omitempty"`
   DistributionManagement *DistributionManagement `xml:"distributionManagement,omitempty"`
-  Properties *[]Any `xml:"properties,omitempty"`
+  Properties *Any `xml:"properties,omitempty"`
   DependencyManagement *DependencyManagement `xml:"dependencyManagement,omitempty"`
   Dependencies *Dependencies `xml:"dependencies,omitempty"`
   Repositories *Repositories `xml:"repositories,omitempty"`
