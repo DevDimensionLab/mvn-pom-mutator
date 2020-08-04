@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/xml"
 	"io/ioutil"
-	"mvn-cli/pkg/pom"
+	"mvn-pom-mutator/pkg/pom"
 	"os"
 )
 
