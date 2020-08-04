@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/xml"
 	"io/ioutil"
-	"mvn-pom-mutator/pkg/pom"
+	"github.com/perottobc/mvn-pom-mutator/pkg/pom"
 	"os"
 )
 
