@@ -17,12 +17,31 @@ func (deps Dependencies) FindArtifact(artifactId string) (Dependency, error) {
 	return Dependency{}, errors.New("could not find artifact " + artifactId + " in dependencies")
 }
 
+func (model *Model) GetVersion(dep Dependency) (string, error) {
+	if strings.HasPrefix(dep.Version, "${") {
+		versionKey := strings.Trim(dep.Version, "${}")
+		return model.Properties.FindKey(versionKey)
+	} else {
+		return dep.Version, nil
+	}
+}
+
 func (dep Dependency) GetVersion(model *Model) (string, error) {
 	if strings.HasPrefix(dep.Version, "${") {
 		versionKey := strings.Trim(dep.Version, "${}")
 		return model.Properties.FindKey(versionKey)
 	} else {
 		return dep.Version, nil
+	}
+}
+
+func (model *Model) SetVersion(dep Dependency, newVersion string) error {
+	if strings.HasPrefix(dep.Version, "${") {
+		versionKey := strings.Trim(dep.Version, "${}")
+		return model.Properties.SetKey(versionKey, newVersion)
+	} else {
+		dep.Version = newVersion
+		return nil
 	}
 }
 
