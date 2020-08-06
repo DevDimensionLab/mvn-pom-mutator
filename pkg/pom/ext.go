@@ -27,9 +27,9 @@ func (any Any) FindKey(key string) (string, error) {
 }
 
 func (any *Any) SetKey(key string, value string) error {
-	for _, a := range any.AnyElements {
+	for i, a := range any.AnyElements {
 		if a.XMLName.Local == key {
-			a.Value = value
+			any.AnyElements[i].Value = value
 			return nil
 		}
 	}
