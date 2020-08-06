@@ -3,6 +3,7 @@ package pom
 import (
 	"errors"
 	"io/ioutil"
+	"strings"
 )
 
 func (deps Dependencies) FindArtifact(artifactId string) (Dependency, error) {
@@ -14,6 +15,25 @@ func (deps Dependencies) FindArtifact(artifactId string) (Dependency, error) {
 	}
 
 	return Dependency{}, errors.New("could not find artifact " + artifactId + " in dependencies")
+}
+
+func (dep Dependency) GetVersion(model *Model) (string, error) {
+	if strings.HasPrefix(dep.Version, "${") {
+		versionKey := strings.Trim(dep.Version, "${}")
+		return model.Properties.FindKey(versionKey)
+	} else {
+		return dep.Version, nil
+	}
+}
+
+func (dep Dependency) SetVersion(model *Model, newVersion string) error {
+	if strings.HasPrefix(dep.Version, "${") {
+		versionKey := strings.Trim(dep.Version, "${}")
+		return model.Properties.SetKey(versionKey, newVersion)
+	} else {
+		dep.Version = newVersion
+		return nil
+	}
 }
 
 func (any Any) FindKey(key string) (string, error) {
