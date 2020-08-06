@@ -1,4 +1,4 @@
-package mvn_crud
+package pom
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 
 func TestShouldReadAndWritePomXml(t *testing.T) {
 
-	model, err := GetPomModel("../../resources/github.com/manouti/java-http-client-api/pom.xml")
+	model, err := GetModelFrom("../../resources/github.com/manouti/java-http-client-api/pom.xml")
 	if nil != err {
 		t.Error(err)
 	}

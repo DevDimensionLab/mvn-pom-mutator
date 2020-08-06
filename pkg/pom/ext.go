@@ -2,7 +2,6 @@ package pom
 
 import (
 	"errors"
-	"github.com/perottobc/mvn-pom-mutator/pkg/mvn_crud"
 	"io/ioutil"
 )
 
@@ -39,7 +38,7 @@ func (any *Any) SetKey(key string, value string) error {
 }
 
 func (model *Model) WriteToFile(outputFile string) error {
-	bytes, err := mvn_crud.Marshall(model)
+	bytes, err := Marshall(model)
 	if err != nil {
 		return err
 	}
