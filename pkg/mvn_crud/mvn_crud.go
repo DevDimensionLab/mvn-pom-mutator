@@ -3,8 +3,8 @@ package mvn_crud
 import (
 	"bytes"
 	"encoding/xml"
-	"io/ioutil"
 	"github.com/perottobc/mvn-pom-mutator/pkg/pom"
+	"io/ioutil"
 	"os"
 )
 

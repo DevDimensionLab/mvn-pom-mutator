@@ -26,13 +26,12 @@ type InlineElement struct {
 	Type      string `xml:"type,attr"`
 }
 
-
 type InlineComplexType struct {
 	Text     string `xml:",chardata"`
 	Sequence *struct {
-		Text    string `xml:",chardata"`
+		Text    string         `xml:",chardata"`
 		Element *InlineElement `xml:"element"`
-		Any *struct {
+		Any     *struct {
 			Text            string `xml:",chardata"`
 			MinOccurs       string `xml:"minOccurs,attr"`
 			MaxOccurs       string `xml:"maxOccurs,attr"`

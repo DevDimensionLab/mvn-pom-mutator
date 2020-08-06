@@ -6,16 +6,14 @@ import (
 	"testing"
 )
 
-
-
 func TestShouldReadAndWritePomXml(t *testing.T) {
 
 	model, err := GetPomModel("../../resources/github.com/manouti/java-http-client-api/pom.xml")
 	if nil != err {
-		t.Error( err )
+		t.Error(err)
 	}
 
-	fmt.Println( model.ArtifactId )
+	fmt.Println(model.ArtifactId)
 
 	xml, _ := Marshall(model)
 

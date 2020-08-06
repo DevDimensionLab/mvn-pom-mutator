@@ -39,7 +39,7 @@ func WritePomModelGoSource(xsdPath string, packageName string, goPath string) er
 
 	structs = append(structs, addStructForAnyElement())
 
-	structs = filterUnique( structs )
+	structs = filterUnique(structs)
 
 	goSource := structsToSource(packageName, structs)
 
@@ -56,7 +56,7 @@ func filterUnique(structs []Struct) []Struct {
 			}
 		}
 		if !duplicate {
-			unique = append(unique, s )
+			unique = append(unique, s)
 		}
 	}
 	return unique
@@ -112,8 +112,8 @@ func createStructFromComplexType(complexType xsd_model.ComplexType) []Struct {
 	for _, element := range complexType.All.Element {
 		field, downstreamStructs := createStructFieldFromElement(element)
 
-		fields = append(fields, field )
-		structs = append(structs,downstreamStructs...)
+		fields = append(fields, field)
+		structs = append(structs, downstreamStructs...)
 	}
 
 	return append(structs, Struct{
@@ -122,7 +122,7 @@ func createStructFromComplexType(complexType xsd_model.ComplexType) []Struct {
 	})
 }
 
-func createStructFieldFromElement(element xsd_model.Element) (Field,[]Struct)  {
+func createStructFieldFromElement(element xsd_model.Element) (Field, []Struct) {
 	var structs []Struct
 	t := element.Type
 	sequence := element.ComplexType.Sequence
@@ -160,7 +160,7 @@ func createStructFieldFromElement(element xsd_model.Element) (Field,[]Struct)  {
 	}, structs
 }
 
-func xsdTypeToGo( xsdType string ) string {
+func xsdTypeToGo(xsdType string) string {
 	t := strings.Replace(xsdType, "xs:", "", 1)
 	if "boolean" == xsdType {
 		t = "bool"
@@ -173,7 +173,7 @@ func createStructFromInlineElement(parentElementName string, element *xsd_model.
 
 	typeToGo := xsdTypeToGo(element.Type)
 
-	if element.MaxOccurs=="unbounded" {
+	if element.MaxOccurs == "unbounded" {
 		typeToGo = "[]" + typeToGo
 	}
 
@@ -184,10 +184,9 @@ func createStructFromInlineElement(parentElementName string, element *xsd_model.
 	}
 	return Struct{
 		Name:   strings.Title(parentElementName),
-		Fields: [] Field{fields},
+		Fields: []Field{fields},
 	}
 }
-
 
 func createProjectModelStandardFields() []Field {
 	return []Field{

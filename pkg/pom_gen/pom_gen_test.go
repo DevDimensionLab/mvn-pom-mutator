@@ -5,15 +5,16 @@ import (
 	"mvn-cli/pkg/xsd_model"
 	"testing"
 )
-func traverseComplexType( schema *xsd_model.Schema, complexType *xsd_model.ComplexType, pad string ) {
-	fmt.Println( pad + "   complexType: " + complexType.Name )
+
+func traverseComplexType(schema *xsd_model.Schema, complexType *xsd_model.ComplexType, pad string) {
+	fmt.Println(pad + "   complexType: " + complexType.Name)
 
 	for _, childElement := range complexType.All.Element {
-		traverse( schema, childElement, "   " + pad )
+		traverse(schema, childElement, "   "+pad)
 	}
 }
 
-func traverse( schema *xsd_model.Schema, element xsd_model.Element, pad string ) {
+func traverse(schema *xsd_model.Schema, element xsd_model.Element, pad string) {
 	elementType := element.Type
 	if nil != element.ComplexType.Sequence.Element {
 		elementType = element.ComplexType.Sequence.Element.Type
@@ -22,13 +23,13 @@ func traverse( schema *xsd_model.Schema, element xsd_model.Element, pad string )
 		elementType = "any"
 	}
 
-	fmt.Println( pad + element.Name + " : " + elementType )
+	fmt.Println(pad + element.Name + " : " + elementType)
 	complexType := schema.GetType(elementType)
 	if nil != complexType {
-		traverseComplexType(schema, complexType,"   " + pad)
+		traverseComplexType(schema, complexType, "   "+pad)
 	} else {
 		if "" == elementType {
-			fmt.Println( "\"\" == elementType" )
+			fmt.Println("\"\" == elementType")
 		}
 	}
 }
@@ -43,5 +44,5 @@ func TestShouldTraversePomModel(t *testing.T) {
 }
 
 func TestShouldWritePomModelGoSrc(t *testing.T) {
-	WritePomModelGoSource( "../../resources/maven-4.0.0.xsd", "pom","../../target/pom.go" )
+	WritePomModelGoSource("../../resources/maven-4.0.0.xsd", "pom", "../../target/pom.go")
 }
