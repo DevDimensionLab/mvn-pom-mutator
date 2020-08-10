@@ -2,8 +2,8 @@ package pom_gen
 
 import (
 	"encoding/xml"
+	"github.com/perottobc/mvn-pom-mutator/pkg/xsd_model"
 	"io/ioutil"
-	"mvn-cli/pkg/xsd_model"
 	"os"
 	"strings"
 )
@@ -94,7 +94,7 @@ func structsToSource(packageName string, structs []Struct) []byte {
 		lines = append(lines, "type "+structSrc.Name+" struct {")
 
 		for _, field := range structSrc.Fields {
-			lines = append(lines, "  "+field.Name+" "+field.Type+" "+field.XmlMapping)
+			lines = append(lines, "	"+field.Name+" "+field.Type+" "+field.XmlMapping)
 		}
 
 		lines = append(lines, "}\n")

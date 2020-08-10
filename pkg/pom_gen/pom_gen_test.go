@@ -2,7 +2,7 @@ package pom_gen
 
 import (
 	"fmt"
-	"mvn-cli/pkg/xsd_model"
+	"github.com/perottobc/mvn-pom-mutator/pkg/xsd_model"
 	"testing"
 )
 
