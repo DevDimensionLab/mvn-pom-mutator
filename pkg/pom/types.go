@@ -23,6 +23,7 @@ type Modules struct {
 }
 
 type Dependencies struct {
+	Comment    string       `xml:",comment"`
 	Dependency []Dependency `xml:"dependency,omitempty"`
 }
 
@@ -39,6 +40,7 @@ type Profiles struct {
 }
 
 type Model struct {
+	Comment                string                  `xml:",comment"`
 	XMLName                xml.Name                `xml:"project"`
 	Xmlns                  string                  `xml:"xmlns,attr"`
 	SchemaLocation         string                  `xml:"xsi,attr"`
@@ -103,6 +105,7 @@ type Notifier struct {
 }
 
 type Scm struct {
+	Comment             string `xml:",comment"`
 	Connection          string `xml:"connection,omitempty"`
 	DeveloperConnection string `xml:"developerConnection,omitempty"`
 	Tag                 string `xml:"tag,omitempty"`
@@ -119,10 +122,12 @@ type DependencyManagement struct {
 }
 
 type Exclusions struct {
+	Comment   string      `xml:",comment"`
 	Exclusion []Exclusion `xml:"exclusion,omitempty"`
 }
 
 type Dependency struct {
+	Comment    string      `xml:",comment"`
 	GroupId    string      `xml:"groupId,omitempty"`
 	ArtifactId string      `xml:"artifactId,omitempty"`
 	Version    string      `xml:"version,omitempty"`
@@ -192,6 +197,7 @@ type Organization struct {
 }
 
 type DistributionManagement struct {
+	Comment            string                `xml:",comment"`
 	Repository         *DeploymentRepository `xml:"repository,omitempty"`
 	SnapshotRepository *DeploymentRepository `xml:"snapshotRepository,omitempty"`
 	Site               *Site                 `xml:"site,omitempty"`
@@ -230,7 +236,8 @@ type Site struct {
 }
 
 type Plugins struct {
-	Plugin []ReportPlugin `xml:"plugin,omitempty"`
+	Comment string         `xml:",comment"`
+	Plugin  []ReportPlugin `xml:"plugin,omitempty"`
 }
 
 type Reporting struct {
@@ -244,6 +251,7 @@ type ReportSets struct {
 }
 
 type ReportPlugin struct {
+	Comment       string      `xml:",comment"`
 	GroupId       string      `xml:"groupId,omitempty"`
 	ArtifactId    string      `xml:"artifactId,omitempty"`
 	Version       string      `xml:"version,omitempty"`
@@ -304,6 +312,7 @@ type ActivationOS struct {
 }
 
 type Repository struct {
+	Comment   string            `xml:",comment"`
 	Releases  *RepositoryPolicy `xml:"releases,omitempty"`
 	Snapshots *RepositoryPolicy `xml:"snapshots,omitempty"`
 	Id        string            `xml:"id,omitempty"`
@@ -340,6 +349,7 @@ type Executions struct {
 }
 
 type Plugin struct {
+	Comment       string        `xml:",comment"`
 	GroupId       string        `xml:"groupId,omitempty"`
 	ArtifactId    string        `xml:"artifactId,omitempty"`
 	Version       string        `xml:"version,omitempty"`
@@ -372,6 +382,7 @@ type Excludes struct {
 }
 
 type Resource struct {
+	Comment    string    `xml:",comment"`
 	TargetPath string    `xml:"targetPath,omitempty"`
 	Filtering  string    `xml:"filtering,omitempty"`
 	Directory  string    `xml:"directory,omitempty"`
@@ -392,6 +403,7 @@ type Extensions struct {
 }
 
 type Build struct {
+	Comment               string            `xml:",comment"`
 	SourceDirectory       string            `xml:"sourceDirectory,omitempty"`
 	ScriptSourceDirectory string            `xml:"scriptSourceDirectory,omitempty"`
 	TestSourceDirectory   string            `xml:"testSourceDirectory,omitempty"`
@@ -415,6 +427,7 @@ type Extension struct {
 }
 
 type Any struct {
+	Comment     string `xml:",comment"`
 	XMLName     xml.Name
 	Value       string `xml:",chardata"`
 	AnyElements []Any  `xml:",any"`

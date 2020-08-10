@@ -3,15 +3,20 @@
 	<groupId>manouti.examples</groupId>
 	<artifactId>httpclient</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<!-- comment here -->
 	<properties>
+		<!-- comment here -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<build>
 		<plugins>
+			<!-- comment here -->
 			<plugin>
+				<!-- comment here -->
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.8.0</version>
 				<configuration>
+					<!-- comment here -->
 					<release>11</release>
 				</configuration>
 			</plugin>
@@ -19,6 +24,7 @@
 	</build>
 	<dependencies>
 		<dependency>
+			<!-- comment here -->
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>

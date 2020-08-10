@@ -1,3 +1,4 @@
 .idea
 target
 mvn-pom-mutator
+resources/github.com/manouti/java-http-client-api/pom.xml.new
