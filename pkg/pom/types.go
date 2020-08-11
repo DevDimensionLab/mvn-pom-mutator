@@ -3,38 +3,47 @@ package pom
 import "encoding/xml"
 
 type Licenses struct {
+	Comment string    `xml:",comment"`
 	License []License `xml:"license,omitempty"`
 }
 
 type Developers struct {
+	Comment   string      `xml:",comment"`
 	Developer []Developer `xml:"developer,omitempty"`
 }
 
 type Contributors struct {
+	Comment     string        `xml:",comment"`
 	Contributor []Contributor `xml:"contributor,omitempty"`
 }
 
 type MailingLists struct {
+	Comment     string        `xml:",comment"`
 	MailingList []MailingList `xml:"mailingList,omitempty"`
 }
 
 type Modules struct {
-	Module []string `xml:"module,omitempty"`
+	Module  []string `xml:"module,omitempty"`
+	Comment string   `xml:",comment"`
 }
 
 type Dependencies struct {
 	Dependency []Dependency `xml:"dependency,omitempty"`
+	Comment    string       `xml:",comment"`
 }
 
 type Repositories struct {
 	Repository []Repository `xml:"repository,omitempty"`
+	Comment    string       `xml:",comment"`
 }
 
 type PluginRepositories struct {
 	PluginRepository []Repository `xml:"pluginRepository,omitempty"`
+	Comment          string       `xml:",comment"`
 }
 
 type Profiles struct {
+	Comment string    `xml:",comment"`
 	Profile []Profile `xml:"profile,omitempty"`
 }
 
@@ -85,6 +94,7 @@ type License struct {
 }
 
 type Notifiers struct {
+	Comment  string     `xml:",comment"`
 	Notifier []Notifier `xml:"notifier,omitempty"`
 }
 
@@ -126,6 +136,7 @@ type DependencyManagement struct {
 }
 
 type Exclusions struct {
+	Comment   string      `xml:",comment"`
 	Exclusion []Exclusion `xml:"exclusion,omitempty"`
 }
 
@@ -157,7 +168,8 @@ type Parent struct {
 }
 
 type Roles struct {
-	Role []string `xml:"role,omitempty"`
+	Role    []string `xml:"role,omitempty"`
+	Comment string   `xml:",comment"`
 }
 
 type Developer struct {
@@ -174,6 +186,7 @@ type Developer struct {
 }
 
 type OtherArchives struct {
+	Comment      string   `xml:",comment"`
 	OtherArchive []string `xml:"otherArchive,omitempty"`
 }
 
@@ -249,7 +262,8 @@ type Site struct {
 }
 
 type Plugins struct {
-	Plugin []ReportPlugin `xml:"plugin,omitempty"`
+	Plugin  []ReportPlugin `xml:"plugin,omitempty"`
+	Comment string         `xml:",comment"`
 }
 
 type Reporting struct {
@@ -260,6 +274,7 @@ type Reporting struct {
 }
 
 type ReportSets struct {
+	Comment   string      `xml:",comment"`
 	ReportSet []ReportSet `xml:"reportSet,omitempty"`
 }
 
@@ -274,7 +289,8 @@ type ReportPlugin struct {
 }
 
 type Reports struct {
-	Report []string `xml:"report,omitempty"`
+	Comment string   `xml:",comment"`
+	Report  []string `xml:"report,omitempty"`
 }
 
 type ReportSet struct {
@@ -342,18 +358,22 @@ type Repository struct {
 
 type Resources struct {
 	Resource []Resource `xml:"resource,omitempty"`
+	Comment  string     `xml:",comment"`
 }
 
 type TestResources struct {
 	TestResource []Resource `xml:"testResource,omitempty"`
+	Comment      string     `xml:",comment"`
 }
 
 type Filters struct {
-	Filter []string `xml:"filter,omitempty"`
+	Filter  []string `xml:"filter,omitempty"`
+	Comment string   `xml:",comment"`
 }
 
 type BuildBasePlugins struct {
-	Plugin []Plugin `xml:"plugin,omitempty"`
+	Plugin  []Plugin `xml:"plugin,omitempty"`
+	Comment string   `xml:",comment"`
 }
 
 type BuildBase struct {
@@ -369,6 +389,7 @@ type BuildBase struct {
 }
 
 type Executions struct {
+	Comment   string            `xml:",comment"`
 	Execution []PluginExecution `xml:"execution,omitempty"`
 }
 
@@ -386,7 +407,8 @@ type Plugin struct {
 }
 
 type Goals struct {
-	Goal []string `xml:"goal,omitempty"`
+	Comment string   `xml:",comment"`
+	Goal    []string `xml:"goal,omitempty"`
 }
 
 type PluginExecution struct {
@@ -399,10 +421,12 @@ type PluginExecution struct {
 }
 
 type Includes struct {
+	Comment string   `xml:",comment"`
 	Include []string `xml:"include,omitempty"`
 }
 
 type Excludes struct {
+	Comment string   `xml:",comment"`
 	Exclude []string `xml:"exclude,omitempty"`
 }
 
@@ -416,7 +440,8 @@ type Resource struct {
 }
 
 type PluginManagementPlugins struct {
-	Plugin []Plugin `xml:"plugin,omitempty"`
+	Plugin  []Plugin `xml:"plugin,omitempty"`
+	Comment string   `xml:",comment"`
 }
 
 type PluginManagement struct {
@@ -430,11 +455,13 @@ type Prerequisites struct {
 }
 
 type Extensions struct {
+	Comment   string      `xml:",comment"`
 	Extension []Extension `xml:"extension,omitempty"`
 }
 
 type BuildPlugins struct {
-	Plugin []Plugin `xml:"plugin,omitempty"`
+	Plugin  []Plugin `xml:"plugin,omitempty"`
+	Comment string   `xml:",comment"`
 }
 
 type Build struct {

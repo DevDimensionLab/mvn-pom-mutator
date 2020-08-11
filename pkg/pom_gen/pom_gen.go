@@ -6,6 +6,7 @@ import (
 	"github.com/perottobc/mvn-pom-mutator/pkg/xsd_model"
 	"io/ioutil"
 	"os"
+	"sort"
 	"strings"
 )
 
@@ -179,24 +180,27 @@ func createStructFieldFromElement(parent xsd_model.ComplexType, element xsd_mode
 
 func hasDuplicate(newStruct Struct, structs []Struct) bool {
 	for _, a := range structs {
-		if a.Name == newStruct.Name && !sameFields(newStruct.Fields, a.Fields) {
+		if a.Name == newStruct.Name && !hasSameFields(newStruct.Fields, a.Fields) {
 			return true
 		}
 	}
 	return false
 }
 
-func sameFields(aFields []Field, bFields []Field) bool {
+func hasSameFields(aFields []Field, bFields []Field) bool {
 
 	if len(aFields) != len(bFields) {
 		return false
 	}
 
-	for _, a := range aFields {
-		for _, b := range bFields {
-			if a.Name != b.Name || a.Type != b.Type || a.XmlMapping != b.XmlMapping {
-				return false
-			}
+	sort.Sort(FieldSort(aFields))
+	sort.Sort(FieldSort(bFields))
+
+	for i := range aFields {
+		if aFields[i].Name != bFields[i].Name ||
+			aFields[i].Type != bFields[i].Type ||
+			aFields[i].XmlMapping != bFields[i].XmlMapping {
+			return false
 		}
 	}
 
@@ -220,14 +224,21 @@ func createStructFromInlineElement(parentElementName string, element *xsd_model.
 		typeToGo = "[]" + typeToGo
 	}
 
-	fields := Field{
+	comment := Field{
+		Name:       "Comment",
+		Type:       "string",
+		XmlMapping: "`xml:\",comment\"`",
+	}
+
+	field := Field{
 		Name:       strings.Title(element.Name),
 		Type:       typeToGo,
 		XmlMapping: "`xml:\"" + element.Name + ",omitempty\"`",
 	}
+
 	return Struct{
 		Name:   strings.Title(parentElementName),
-		Fields: []Field{fields},
+		Fields: []Field{comment, field},
 	}
 }
 
@@ -265,6 +276,14 @@ type Field struct {
 	Name       string
 	Type       string
 	XmlMapping string
+}
+
+type FieldSort []Field
+
+func (a FieldSort) Len() int      { return len(a) }
+func (a FieldSort) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
+func (a FieldSort) Less(i, j int) bool {
+	return a[i].Name > a[j].Name
 }
 
 type Struct struct {
