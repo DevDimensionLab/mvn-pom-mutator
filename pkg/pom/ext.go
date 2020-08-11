@@ -26,7 +26,7 @@ func (model *Model) GetVersion(dep Dependency) (string, error) {
 	}
 }
 
-func (model *Model) SetVersion(dep Dependency, newVersion string) error {
+func (model *Model) SetVersion(dep *Dependency, newVersion string) error {
 	if strings.HasPrefix(dep.Version, "${") {
 		versionKey := strings.Trim(dep.Version, "${}")
 		return model.Properties.SetKey(versionKey, newVersion)
