@@ -2,6 +2,7 @@ package pom_gen
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/perottobc/mvn-pom-mutator/pkg/xsd_model"
 	"io/ioutil"
 	"os"
@@ -37,7 +38,8 @@ func WritePomModelGoSource(xsdPath string, packageName string, goPath string) er
 
 	var structs []Struct
 	for _, complexType := range xsd.ComplexType {
-		structs = append(structs, createStructFromComplexType(complexType)...)
+		newStructs := createStructFromComplexType(complexType, structs)
+		structs = append(structs, newStructs...)
 	}
 
 	structs = append(structs, addStructForAnyElement())
@@ -103,7 +105,7 @@ func structsToSource(packageName string, structs []Struct) []byte {
 	return []byte(strings.Join(lines, "\n"))
 }
 
-func createStructFromComplexType(complexType xsd_model.ComplexType) []Struct {
+func createStructFromComplexType(complexType xsd_model.ComplexType, alreadyDefinedStructs []Struct) []Struct {
 	var structs []Struct
 	var fields []Field
 
@@ -118,8 +120,10 @@ func createStructFromComplexType(complexType xsd_model.ComplexType) []Struct {
 	}
 
 	for _, element := range complexType.All.Element {
-		field := createFieldFromElement(element)
+		field, downstreamStructs := createStructFieldFromElement(complexType, element, alreadyDefinedStructs)
+
 		fields = append(fields, field)
+		structs = append(structs, downstreamStructs...)
 	}
 
 	return append(structs, Struct{
@@ -128,16 +132,23 @@ func createStructFromComplexType(complexType xsd_model.ComplexType) []Struct {
 	})
 }
 
-func createFieldFromElement(element xsd_model.Element) Field {
+func createStructFieldFromElement(parent xsd_model.ComplexType, element xsd_model.Element, alreadyDefinedStructs []Struct) (Field, []Struct) {
+	var structs []Struct
 	t := element.Type
 	sequence := element.ComplexType.Sequence
 	if nil != sequence {
 		if nil != sequence.Element {
-			name := strings.Title(element.Name)
+			var typeName = strings.Title(element.Name)
 			if !(t == "string" || t == "bool") {
-				return createFieldFromInlineElement(sequence.Element)
+				newStruct := createStructFromInlineElement(typeName, sequence.Element)
+				if hasDuplicate(newStruct, alreadyDefinedStructs) {
+					println("FOUND DUPLICATE!" + typeName)
+					typeName = fmt.Sprintf("%s%s", strings.Title(parent.Name), strings.Title(element.Name))
+					newStruct.Name = fmt.Sprintf("%s%s", strings.Title(parent.Name), strings.Title(element.Name))
+				}
+				structs = append(structs, newStruct)
 			}
-			t = name
+			t = typeName
 		} else if nil != sequence.Any {
 			t = "Any"
 			//if "unbounded" == sequence.Any.MaxOccurs {
@@ -163,7 +174,33 @@ func createFieldFromElement(element xsd_model.Element) Field {
 		Name:       strings.Title(elementName),
 		Type:       t,
 		XmlMapping: "`xml:\"" + element.Name + ",omitempty\"`",
+	}, structs
+}
+
+func hasDuplicate(newStruct Struct, structs []Struct) bool {
+	for _, a := range structs {
+		if a.Name == newStruct.Name && !sameFields(newStruct.Fields, a.Fields) {
+			return true
+		}
 	}
+	return false
+}
+
+func sameFields(aFields []Field, bFields []Field) bool {
+
+	if len(aFields) != len(bFields) {
+		return false
+	}
+
+	for _, a := range aFields {
+		for _, b := range bFields {
+			if a.Name != b.Name || a.Type != b.Type || a.XmlMapping != b.XmlMapping {
+				return false
+			}
+		}
+	}
+
+	return true
 }
 
 func xsdTypeToGo(xsdType string) string {
@@ -175,7 +212,7 @@ func xsdTypeToGo(xsdType string) string {
 	return t
 }
 
-func createFieldFromInlineElement(element *xsd_model.InlineElement) Field {
+func createStructFromInlineElement(parentElementName string, element *xsd_model.InlineElement) Struct {
 
 	typeToGo := xsdTypeToGo(element.Type)
 
@@ -183,10 +220,14 @@ func createFieldFromInlineElement(element *xsd_model.InlineElement) Field {
 		typeToGo = "[]" + typeToGo
 	}
 
-	return Field{
+	fields := Field{
 		Name:       strings.Title(element.Name),
 		Type:       typeToGo,
 		XmlMapping: "`xml:\"" + element.Name + ",omitempty\"`",
+	}
+	return Struct{
+		Name:   strings.Title(parentElementName),
+		Fields: []Field{fields},
 	}
 }
 
