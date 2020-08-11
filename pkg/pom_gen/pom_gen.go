@@ -13,20 +13,23 @@ func ReadXsd(path string) (*xsd_model.Schema, error) {
 	if nil != err {
 		return nil, err
 	}
-
 	defer xsdFile.Close()
-	data, _ := ioutil.ReadAll(xsdFile)
+
+	data, err := ioutil.ReadAll(xsdFile)
+	if err != nil {
+		return nil, err
+	}
 
 	model := xsd_model.Schema{}
-	err = xml.Unmarshal([]byte(data), &model)
+	err = xml.Unmarshal(data, &model)
 	if nil != err {
 		return nil, err
 	}
+
 	return &model, nil
 }
 
 func WritePomModelGoSource(xsdPath string, packageName string, goPath string) error {
-
 	xsd, err := ReadXsd(xsdPath)
 	if nil != err {
 		return err
@@ -38,9 +41,7 @@ func WritePomModelGoSource(xsdPath string, packageName string, goPath string) er
 	}
 
 	structs = append(structs, addStructForAnyElement())
-
 	structs = filterUnique(structs)
-
 	goSource := structsToSource(packageName, structs)
 
 	return ioutil.WriteFile(goPath, goSource, 0644)
@@ -105,15 +106,20 @@ func structsToSource(packageName string, structs []Struct) []byte {
 func createStructFromComplexType(complexType xsd_model.ComplexType) []Struct {
 	var structs []Struct
 	var fields []Field
+
+	fields = append(fields, Field{
+		Name:       "Comment",
+		Type:       "string",
+		XmlMapping: "`xml:\",comment\"`",
+	})
+
 	if "Model" == complexType.Name {
 		fields = createProjectModelStandardFields()
 	}
 
 	for _, element := range complexType.All.Element {
-		field, downstreamStructs := createStructFieldFromElement(element)
-
+		field := createFieldFromElement(element)
 		fields = append(fields, field)
-		structs = append(structs, downstreamStructs...)
 	}
 
 	return append(structs, Struct{
@@ -122,21 +128,21 @@ func createStructFromComplexType(complexType xsd_model.ComplexType) []Struct {
 	})
 }
 
-func createStructFieldFromElement(element xsd_model.Element) (Field, []Struct) {
-	var structs []Struct
+func createFieldFromElement(element xsd_model.Element) Field {
 	t := element.Type
 	sequence := element.ComplexType.Sequence
 	if nil != sequence {
 		if nil != sequence.Element {
+			name := strings.Title(element.Name)
 			if !(t == "string" || t == "bool") {
-				structs = append(structs, createStructFromInlineElement(element.Name, sequence.Element))
+				return createFieldFromInlineElement(sequence.Element)
 			}
-			t = strings.Title(element.Name)
+			t = name
 		} else if nil != sequence.Any {
 			t = "Any"
-			if "unbounded" == sequence.Any.MaxOccurs {
-				t = "[]" + t
-			}
+			//if "unbounded" == sequence.Any.MaxOccurs {
+			//	t = "[]" + t
+			//}
 		}
 
 	}
@@ -157,7 +163,7 @@ func createStructFieldFromElement(element xsd_model.Element) (Field, []Struct) {
 		Name:       strings.Title(elementName),
 		Type:       t,
 		XmlMapping: "`xml:\"" + element.Name + ",omitempty\"`",
-	}, structs
+	}
 }
 
 func xsdTypeToGo(xsdType string) string {
@@ -169,7 +175,7 @@ func xsdTypeToGo(xsdType string) string {
 	return t
 }
 
-func createStructFromInlineElement(parentElementName string, element *xsd_model.InlineElement) Struct {
+func createFieldFromInlineElement(element *xsd_model.InlineElement) Field {
 
 	typeToGo := xsdTypeToGo(element.Type)
 
@@ -177,19 +183,20 @@ func createStructFromInlineElement(parentElementName string, element *xsd_model.
 		typeToGo = "[]" + typeToGo
 	}
 
-	fields := Field{
+	return Field{
 		Name:       strings.Title(element.Name),
 		Type:       typeToGo,
 		XmlMapping: "`xml:\"" + element.Name + ",omitempty\"`",
-	}
-	return Struct{
-		Name:   strings.Title(parentElementName),
-		Fields: []Field{fields},
 	}
 }
 
 func createProjectModelStandardFields() []Field {
 	return []Field{
+		{
+			Name:       "Comment",
+			Type:       "string",
+			XmlMapping: "`xml:\",comment\"`",
+		},
 		{
 			Name:       "XMLName",
 			Type:       "xml.Name",

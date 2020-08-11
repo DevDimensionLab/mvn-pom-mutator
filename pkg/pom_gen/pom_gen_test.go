@@ -44,5 +44,9 @@ func TestShouldTraversePomModel(t *testing.T) {
 }
 
 func TestShouldWritePomModelGoSrc(t *testing.T) {
-	WritePomModelGoSource("../../resources/maven-4.0.0.xsd", "pom", "../../target/pom.go")
+	err := WritePomModelGoSource("../../resources/maven-4.0.0.xsd", "pom", "../../target/pom.go")
+
+	if err != nil {
+		t.Error(err)
+	}
 }

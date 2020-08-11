@@ -81,9 +81,9 @@ type Schema struct {
 }
 
 func (s Schema) GetType(name string) *ComplexType {
-	for _, comlexType := range s.ComplexType {
-		if comlexType.Name == name {
-			return &comlexType
+	for _, complexType := range s.ComplexType {
+		if complexType.Name == name {
+			return &complexType
 		}
 	}
 	return nil

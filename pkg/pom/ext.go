@@ -6,11 +6,25 @@ import (
 	"strings"
 )
 
-func (deps Dependencies) FindArtifact(artifactId string) (Dependency, error) {
+func (model *Model) FindArtifact(artifactId string) (Dependency, error) {
 
-	for _, dep := range deps.Dependency {
+	for _, dep := range model.Dependency {
 		if dep.ArtifactId == artifactId {
 			return dep, nil
+		}
+	}
+
+	for _, dep := range model.DependencyManagement.Dependency {
+		if dep.ArtifactId == artifactId {
+			return dep, nil
+		}
+	}
+
+	for _, plugin := range model.Build.Plugin {
+		for _, dep := range plugin.Dependency {
+			if dep.ArtifactId == artifactId {
+				return dep, nil
+			}
 		}
 	}
 
