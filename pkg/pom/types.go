@@ -236,8 +236,8 @@ type Site struct {
 }
 
 type Plugins struct {
-	Comment string         `xml:",comment"`
-	Plugin  []ReportPlugin `xml:"plugin,omitempty"`
+	Comment string   `xml:",comment"`
+	Plugin  []Plugin `xml:"plugin,omitempty"`
 }
 
 type Reporting struct {
@@ -256,6 +256,17 @@ type ReportPlugin struct {
 	ArtifactId    string      `xml:"artifactId,omitempty"`
 	Version       string      `xml:"version,omitempty"`
 	ReportSets    *ReportSets `xml:"reportSets,omitempty"`
+	Inherited     string      `xml:"inherited,omitempty"`
+	Configuration *[]Any      `xml:"configuration,omitempty"`
+}
+
+type Plugin struct {
+	Comment       string      `xml:",comment"`
+	GroupId       string      `xml:"groupId,omitempty"`
+	ArtifactId    string      `xml:"artifactId,omitempty"`
+	Version       string      `xml:"version,omitempty"`
+	Extensions    string      `xml:"extensions,omitempty"`
+	Executions    *Executions `xml:"executions,omitempty"`
 	Inherited     string      `xml:"inherited,omitempty"`
 	Configuration *[]Any      `xml:"configuration,omitempty"`
 }
@@ -345,30 +356,16 @@ type BuildBase struct {
 }
 
 type Executions struct {
-	Execution []PluginExecution `xml:"execution,omitempty"`
+	Comment   string      `xml:",comment"`
+	Text      string      `xml:",chardata"`
+	Execution []Execution `xml:"execution,omitempty"`
 }
 
-type Plugin struct {
-	Comment       string        `xml:",comment"`
-	GroupId       string        `xml:"groupId,omitempty"`
-	ArtifactId    string        `xml:"artifactId,omitempty"`
-	Version       string        `xml:"version,omitempty"`
-	Extensions    string        `xml:"extensions,omitempty"`
-	Executions    *Executions   `xml:"executions,omitempty"`
-	Dependencies  *Dependencies `xml:"dependencies,omitempty"`
-	Goals         *[]Any        `xml:"goals,omitempty"`
-	Inherited     string        `xml:"inherited,omitempty"`
-	Configuration *[]Any        `xml:"configuration,omitempty"`
-}
-
-type Goals struct {
-	Goal []string `xml:"goal,omitempty"`
-}
-
-type PluginExecution struct {
+type Execution struct {
+	Text          string `xml:",chardata"`
 	Id            string `xml:"id,omitempty"`
 	Phase         string `xml:"phase,omitempty"`
-	Goals         *Goals `xml:"goals,omitempty"`
+	Goals         *[]Any `xml:"goals,omitempty"`
 	Inherited     string `xml:"inherited,omitempty"`
 	Configuration *[]Any `xml:"configuration,omitempty"`
 }
