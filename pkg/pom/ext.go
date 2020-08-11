@@ -2,19 +2,20 @@ package pom
 
 import (
 	"errors"
+	"github.com/google/go-cmp/cmp"
 	"io/ioutil"
 	"strings"
 )
 
-func (deps Dependencies) FindArtifact(artifactId string) (*Dependency, error) {
+func (deps Dependencies) FindArtifact(artifactId string) (Dependency, error) {
 
 	for _, dep := range deps.Dependency {
 		if dep.ArtifactId == artifactId {
-			return &dep, nil
+			return dep, nil
 		}
 	}
 
-	return &Dependency{}, errors.New("could not find artifact " + artifactId + " in dependencies")
+	return Dependency{}, errors.New("could not find artifact " + artifactId + " in dependencies")
 }
 
 func (model *Model) GetVersion(dep Dependency) (string, error) {
@@ -26,11 +27,16 @@ func (model *Model) GetVersion(dep Dependency) (string, error) {
 	}
 }
 
-func (model *Model) SetVersion(dep *Dependency, newVersion string) error {
+func (model *Model) SetVersion(dep Dependency, newVersion string) error {
 	if strings.HasPrefix(dep.Version, "${") {
 		versionKey := strings.Trim(dep.Version, "${}")
 		return model.Properties.SetKey(versionKey, newVersion)
 	} else {
+		for _, d := range model.Dependencies.Dependency {
+			if cmp.Equal(dep, d) {
+				d.Version = newVersion
+			}
+		}
 		dep.Version = newVersion
 		return nil
 	}
