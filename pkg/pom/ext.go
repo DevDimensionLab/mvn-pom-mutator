@@ -6,15 +6,15 @@ import (
 	"strings"
 )
 
-func (deps Dependencies) FindArtifact(artifactId string) (Dependency, error) {
+func (deps Dependencies) FindArtifact(artifactId string) (*Dependency, error) {
 
 	for _, dep := range deps.Dependency {
 		if dep.ArtifactId == artifactId {
-			return dep, nil
+			return &dep, nil
 		}
 	}
 
-	return Dependency{}, errors.New("could not find artifact " + artifactId + " in dependencies")
+	return &Dependency{}, errors.New("could not find artifact " + artifactId + " in dependencies")
 }
 
 func (model *Model) GetVersion(dep Dependency) (string, error) {
