@@ -2,6 +2,7 @@ package pom
 
 import (
 	"errors"
+	"fmt"
 	"github.com/google/go-cmp/cmp"
 	"io/ioutil"
 	"strings"
@@ -32,14 +33,16 @@ func (model *Model) SetVersion(dep Dependency, newVersion string) error {
 		versionKey := strings.Trim(dep.Version, "${}")
 		return model.Properties.SetKey(versionKey, newVersion)
 	} else {
-		for _, d := range model.Dependencies.Dependency {
+		for i, d := range model.Dependencies.Dependency {
 			if cmp.Equal(dep, d) {
-				d.Version = newVersion
+				model.Dependencies.Dependency[i].Version = newVersion
+				dep.Version = newVersion
+				return nil
 			}
 		}
-		dep.Version = newVersion
-		return nil
 	}
+
+	return errors.New(fmt.Sprintf("error setting new version [%s] for %s:%s", newVersion, dep.GroupId, dep.ArtifactId))
 }
 
 func (any Any) FindKey(key string) (string, error) {
