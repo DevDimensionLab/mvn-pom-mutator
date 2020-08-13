@@ -1,10 +1,13 @@
 package pom
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/xml"
+	"io"
 	"io/ioutil"
 	"os"
+	"strings"
 )
 
 func GetModelFrom(path string) (*Model, error) {
@@ -30,7 +33,7 @@ func Marshall(project *Model) ([]byte, error) {
 		return nil, err
 	}
 
-	whitespaceFix := cleanUnwanted(raw, "&#xA;", "&#x9;")
+	whitespaceFix := cleanUnwanted(raw, "&#xA;", "&#x9;", "&#x20;", "&#xD;")
 	namespaceFix := searchAndReplace(whitespaceFix,
 		replace{
 			s1: " xmlns=\"http://maven.apache.org/POM/4.0.0\">",
@@ -43,7 +46,7 @@ func Marshall(project *Model) ([]byte, error) {
 			s2: "xsi:schemaLocation=",
 		})
 
-	return namespaceFix, nil
+	return removeTrailingWhitespace(namespaceFix), nil
 }
 
 func searchAndReplace(content []byte, commands ...replace) []byte {
@@ -65,6 +68,21 @@ func cleanUnwanted(content []byte, str ...string) []byte {
 
 func bytesReplace(content []byte, from string, to string) []byte {
 	return bytes.ReplaceAll(content, []byte(from), []byte(to))
+}
+
+func removeTrailingWhitespace(input []byte) []byte {
+	var output []byte
+	br := bufio.NewReader(bytes.NewReader(input))
+	for {
+		line, _, err := br.ReadLine()
+		cleanLine := strings.TrimRight(string(line), " ")
+		output = append(output, []byte(cleanLine+"\n")...)
+		if err == io.EOF {
+			break
+		}
+	}
+
+	return output
 }
 
 type replace struct {
