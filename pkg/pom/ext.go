@@ -19,7 +19,7 @@ func (deps Dependencies) FindArtifact(artifactId string) (Dependency, error) {
 	return Dependency{}, errors.New("could not find artifact " + artifactId + " in dependencies")
 }
 
-func (model *Model) GetVersion(dep Dependency) (string, error) {
+func (model *Model) GetDependencyVersion(dep Dependency) (string, error) {
 	if strings.HasPrefix(dep.Version, "${") {
 		versionKey := strings.Trim(dep.Version, "${}")
 		return model.Properties.FindKey(versionKey)
@@ -28,7 +28,16 @@ func (model *Model) GetVersion(dep Dependency) (string, error) {
 	}
 }
 
-func (model *Model) SetVersion(dep Dependency, newVersion string) error {
+func (model *Model) GetPluginVersion(plugin Plugin) (string, error) {
+	if strings.HasPrefix(plugin.Version, "${") {
+		versionKey := strings.Trim(plugin.Version, "${}")
+		return model.Properties.FindKey(versionKey)
+	} else {
+		return plugin.Version, nil
+	}
+}
+
+func (model *Model) SetDependencyVersion(dep Dependency, newVersion string) error {
 	if strings.HasPrefix(dep.Version, "${") {
 		versionKey := strings.Trim(dep.Version, "${}")
 		return model.Properties.SetKey(versionKey, newVersion)
@@ -43,6 +52,23 @@ func (model *Model) SetVersion(dep Dependency, newVersion string) error {
 	}
 
 	return errors.New(fmt.Sprintf("error setting new version [%s] for %s:%s", newVersion, dep.GroupId, dep.ArtifactId))
+}
+
+func (model *Model) SetPluginVersion(plugin Plugin, newVersion string) error {
+	if strings.HasPrefix(plugin.Version, "${") {
+		versionKey := strings.Trim(plugin.Version, "${}")
+		return model.Properties.SetKey(versionKey, newVersion)
+	} else {
+		for i, d := range model.Build.Plugins.Plugin {
+			if cmp.Equal(plugin, d) {
+				model.Build.Plugins.Plugin[i].Version = newVersion
+				plugin.Version = newVersion
+				return nil
+			}
+		}
+	}
+
+	return errors.New(fmt.Sprintf("error setting new version [%s] for %s:%s", newVersion, plugin.GroupId, plugin.ArtifactId))
 }
 
 func (any Any) FindKey(key string) (string, error) {
