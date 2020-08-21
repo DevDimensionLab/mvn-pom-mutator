@@ -42,16 +42,30 @@ func (model *Model) SetDependencyVersion(dep Dependency, newVersion string) erro
 		versionKey := strings.Trim(dep.Version, "${}")
 		return model.Properties.SetKey(versionKey, newVersion)
 	} else {
-		for i, d := range model.Dependencies.Dependency {
-			if cmp.Equal(dep, d) {
-				model.Dependencies.Dependency[i].Version = newVersion
-				dep.Version = newVersion
-				return nil
-			}
+		var found = false
+		if nil != model.Dependencies {
+			found = SetDependencyVersionElement(model.Dependencies, dep, newVersion)
+		}
+		if nil != model.DependencyManagement && nil != model.DependencyManagement.Dependencies {
+			found = found || SetDependencyVersionElement(model.DependencyManagement.Dependencies, dep, newVersion)
+		}
+		if found {
+			return nil
 		}
 	}
 
 	return errors.New(fmt.Sprintf("error setting new version [%s] for %s:%s", newVersion, dep.GroupId, dep.ArtifactId))
+}
+
+func SetDependencyVersionElement(dependencies *Dependencies, dep Dependency, newVersion string) bool {
+	for i, d := range dependencies.Dependency {
+		if cmp.Equal(dep, d) {
+			dependencies.Dependency[i].Version = newVersion
+			dep.Version = newVersion
+			return true
+		}
+	}
+	return false
 }
 
 func (model *Model) SetPluginVersion(plugin Plugin, newVersion string) error {
