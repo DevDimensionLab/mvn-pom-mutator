@@ -127,7 +127,11 @@ func (any *Any) SetKey(key string, value string) error {
 func (any *Any) AddKey(key string, value string) error {
 	for _, a := range any.AnyElements {
 		if a.XMLName.Local == key {
-			return errors.New(fmt.Sprintf("cound another key: %s", key))
+			if a.Value != value {
+				return errors.New(fmt.Sprintf("found another key: %s with value %s", key, value))
+			} else {
+				return nil
+			}
 		}
 	}
 
