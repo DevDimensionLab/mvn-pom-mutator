@@ -23,6 +23,13 @@ var initCmd = &cobra.Command{
 			log.Fatalln(err)
 		}
 
+		for _, dep := range model.Dependencies.Dependency {
+			if dep.Version != "" {
+				fmt.Printf("found version on dependency %s:%s [%s]\n", dep.GroupId, dep.ArtifactId, dep.Version)
+				err = model.ReplaceVersionTagWithProperty(dep)
+			}
+		}
+
 		err = model.WriteToFile(fmt.Sprintf("%s/pom.xml", targetDirectory))
 
 		if err != nil {

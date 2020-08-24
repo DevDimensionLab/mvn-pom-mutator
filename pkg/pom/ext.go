@@ -85,6 +85,24 @@ func (model *Model) SetPluginVersion(plugin Plugin, newVersion string) error {
 	return errors.New(fmt.Sprintf("error setting new version [%s] for %s:%s", newVersion, plugin.GroupId, plugin.ArtifactId))
 }
 
+func (model *Model) ReplaceVersionTagWithProperty(dep Dependency) error {
+	if strings.HasPrefix(dep.Version, "${") {
+		return errors.New("version tag already contains a variable")
+	}
+
+	for i, d := range model.Dependencies.Dependency {
+		if cmp.Equal(dep, d) {
+			versionKey := dep.GroupId
+			versionTag := fmt.Sprintf("%s.version", versionKey)
+			versionVariable := fmt.Sprintf("${%s}", versionTag)
+			model.Dependencies.Dependency[i].Version = versionVariable
+			return model.Properties.AddKey(versionTag, dep.Version)
+		}
+	}
+
+	return errors.New(fmt.Sprintf("could not find dependency: %s:%s in model", dep.GroupId, dep.ArtifactId))
+}
+
 func (any Any) FindKey(key string) (string, error) {
 	for _, a := range any.AnyElements {
 		if a.XMLName.Local == key {
@@ -104,6 +122,21 @@ func (any *Any) SetKey(key string, value string) error {
 	}
 
 	return errors.New("could not find key " + key + " in any structure")
+}
+
+func (any *Any) AddKey(key string, value string) error {
+	for _, a := range any.AnyElements {
+		if a.XMLName.Local == key {
+			return errors.New(fmt.Sprintf("cound another key: %s", key))
+		}
+	}
+
+	any.AnyElements = append(any.AnyElements, Any{
+		XMLName: struct{ Space, Local string }{Space: "", Local: key},
+		Value:   value,
+	})
+
+	return nil
 }
 
 func (model *Model) WriteToFile(outputFile string) error {
