@@ -92,7 +92,7 @@ func (model *Model) ReplaceVersionTagWithProperty(dep Dependency) error {
 
 	for i, d := range model.Dependencies.Dependency {
 		if cmp.Equal(dep, d) {
-			versionKey := dep.GroupId
+			versionKey := dep.ArtifactId
 			versionTag := fmt.Sprintf("%s.version", versionKey)
 			versionVariable := fmt.Sprintf("${%s}", versionTag)
 			model.Dependencies.Dependency[i].Version = versionVariable
