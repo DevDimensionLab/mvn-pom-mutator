@@ -156,3 +156,15 @@ func (model *Model) WriteToFile(outputFile string) error {
 
 	return nil
 }
+
+func (model *Model) RemoveDependency(dep Dependency) error {
+
+	for i, d := range model.Dependencies.Dependency {
+		if cmp.Equal(dep, d) {
+			model.Dependencies.Dependency = append(model.Dependencies.Dependency[:i], model.Dependencies.Dependency[i+1:]...)
+			return nil
+		}
+	}
+
+	return errors.New(fmt.Sprintf("could not find dependency: %s:%s in model", dep.GroupId, dep.ArtifactId))
+}
