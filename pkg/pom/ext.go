@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/google/go-cmp/cmp"
+	pom "github.com/perottobc/mvn-pom-mutator/target"
 	"io/ioutil"
 	"strings"
 )
@@ -85,18 +86,20 @@ func (model *Model) SetPluginVersion(plugin Plugin, newVersion string) error {
 	return errors.New(fmt.Sprintf("error setting new version [%s] for %s:%s", newVersion, plugin.GroupId, plugin.ArtifactId))
 }
 
-func (model *Model) ReplaceVersionTagWithProperty(dep Dependency) error {
+func (model *Model) ReplaceVersionTagWithProperty(dep Dependency, dependencies []pom.Dependency) error {
 	if strings.HasPrefix(dep.Version, "${") {
 		return errors.New("version tag already contains a variable")
 	}
 
-	for i, d := range model.Dependencies.Dependency {
-		if cmp.Equal(dep, d) {
-			versionKey := dep.ArtifactId
-			versionTag := fmt.Sprintf("%s.version", versionKey)
-			versionVariable := fmt.Sprintf("${%s}", versionTag)
-			model.Dependencies.Dependency[i].Version = versionVariable
-			return model.Properties.AddKey(versionTag, dep.Version)
+	if dependencies != nil {
+		for i, d := range dependencies {
+			if cmp.Equal(dep, d) {
+				versionKey := dep.ArtifactId
+				versionTag := fmt.Sprintf("%s.version", versionKey)
+				versionVariable := fmt.Sprintf("${%s}", versionTag)
+				model.Dependencies.Dependency[i].Version = versionVariable
+				return model.Properties.AddKey(versionTag, dep.Version)
+			}
 		}
 	}
 
