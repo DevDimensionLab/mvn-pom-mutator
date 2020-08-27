@@ -85,13 +85,13 @@ func (model *Model) SetPluginVersion(plugin Plugin, newVersion string) error {
 	return errors.New(fmt.Sprintf("error setting new version [%s] for %s:%s", newVersion, plugin.GroupId, plugin.ArtifactId))
 }
 
-func (model *Model) ReplaceVersionTagWithProperty(dep Dependency, dependencies []Dependency) error {
+func (model *Model) ReplaceVersionTagForDependency(dep Dependency) error {
 	if strings.HasPrefix(dep.Version, "${") {
 		return errors.New("version tag already contains a variable")
 	}
 
-	if dependencies != nil {
-		for i, d := range dependencies {
+	if model.Dependencies != nil {
+		for i, d := range model.Dependencies.Dependency {
 			if cmp.Equal(dep, d) {
 				versionKey := dep.ArtifactId
 				versionTag := fmt.Sprintf("%s.version", versionKey)
@@ -102,7 +102,27 @@ func (model *Model) ReplaceVersionTagWithProperty(dep Dependency, dependencies [
 		}
 	}
 
-	return errors.New(fmt.Sprintf("could not find dependency: %s:%s in model", dep.GroupId, dep.ArtifactId))
+	return errors.New(fmt.Sprintf("could not find dependency: %s:%s in model.Dependencies", dep.GroupId, dep.ArtifactId))
+}
+
+func (model *Model) ReplaceVersionTagForDependencyManagement(dep Dependency) error {
+	if strings.HasPrefix(dep.Version, "${") {
+		return errors.New("version tag already contains a variable")
+	}
+
+	if model.DependencyManagement != nil && model.DependencyManagement.Dependencies != nil {
+		for i, d := range model.DependencyManagement.Dependencies.Dependency {
+			if cmp.Equal(dep, d) {
+				versionKey := dep.ArtifactId
+				versionTag := fmt.Sprintf("%s.version", versionKey)
+				versionVariable := fmt.Sprintf("${%s}", versionTag)
+				model.DependencyManagement.Dependencies.Dependency[i].Version = versionVariable
+				return model.Properties.AddKey(versionTag, dep.Version)
+			}
+		}
+	}
+
+	return errors.New(fmt.Sprintf("could not find dependency: %s:%s in model.dependencyManagement", dep.GroupId, dep.ArtifactId))
 }
 
 func (any Any) FindKey(key string) (string, error) {
