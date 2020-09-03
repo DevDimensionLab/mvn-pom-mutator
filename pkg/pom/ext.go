@@ -180,7 +180,6 @@ func (model *Model) WriteToFile(outputFile string) error {
 }
 
 func (model *Model) RemoveDependency(dep Dependency) error {
-
 	for i, d := range model.Dependencies.Dependency {
 		if cmp.Equal(dep, d) {
 			model.Dependencies.Dependency = append(model.Dependencies.Dependency[:i], model.Dependencies.Dependency[i+1:]...)
@@ -189,4 +188,24 @@ func (model *Model) RemoveDependency(dep Dependency) error {
 	}
 
 	return errors.New(fmt.Sprintf("could not find dependency: %s:%s in model", dep.GroupId, dep.ArtifactId))
+}
+
+func (model *Model) FindDependency(groupId string, artifactId string) (Dependency, error) {
+	for _, dep := range model.Dependencies.Dependency {
+		if dep.GroupId == groupId && dep.ArtifactId == artifactId {
+			return dep, nil
+		}
+	}
+
+	errMsg := fmt.Sprintf("could not find dependency: %s:%s in model", groupId, artifactId)
+	return Dependency{}, errors.New(errMsg)
+}
+
+func (model *Model) InsertDependency(dep Dependency) {
+	_, err := model.FindDependency(dep.GroupId, dep.GroupId)
+	if err == nil {
+		return
+	}
+
+	model.Dependencies.Dependency = append(model.Dependencies.Dependency, dep)
 }
