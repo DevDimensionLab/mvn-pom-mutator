@@ -90,6 +90,10 @@ func (model *Model) ReplaceVersionTagForDependency(dep Dependency) error {
 		return errors.New("version tag already contains a variable")
 	}
 
+	if model.Properties == nil {
+		model.Properties = &Any{}
+	}
+
 	if model.Dependencies != nil {
 		for i, d := range model.Dependencies.Dependency {
 			if cmp.Equal(dep, d) {
@@ -108,6 +112,10 @@ func (model *Model) ReplaceVersionTagForDependency(dep Dependency) error {
 func (model *Model) ReplaceVersionTagForDependencyManagement(dep Dependency) error {
 	if strings.HasPrefix(dep.Version, "${") {
 		return errors.New("version tag already contains a variable")
+	}
+
+	if model.Properties == nil {
+		model.Properties = &Any{}
 	}
 
 	if model.DependencyManagement != nil && model.DependencyManagement.Dependencies != nil {
