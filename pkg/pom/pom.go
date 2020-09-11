@@ -36,12 +36,14 @@ func Marshall(project *Model) ([]byte, error) {
 	whitespaceFix := cleanUnwanted(raw, "&#xA;", "&#x9;", "&#x20;", "&#xD;")
 	namespaceFix := searchAndReplace(whitespaceFix,
 		replace{
-			s1: " xmlns=\"http://maven.apache.org/POM/4.0.0\">",
-			s2: ">",
-		}, replace{
+			s1: " xmlns=\"http://maven.apache.org/POM/4.0.0\"",
+			s2: "",
+		},
+		replace{
 			s1: "xsi=",
 			s2: "xmlns:xsi=",
-		}, replace{
+		},
+		replace{
 			s1: "schemaLocation=",
 			s2: "xsi:schemaLocation=",
 		})

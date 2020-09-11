@@ -76,6 +76,11 @@ func addStructForAnyElement() Struct {
 				XmlMapping: "",
 			},
 			{
+				Name:       "Attrs",
+				Type:       "[]xml.Attr",
+				XmlMapping: "`xml:\",any,attr\"`",
+			},
+			{
 				Name:       "Value",
 				Type:       "string",
 				XmlMapping: "`xml:\",chardata\"`",

@@ -491,6 +491,7 @@ type Extension struct {
 
 type Any struct {
 	XMLName     xml.Name
-	Value       string `xml:",chardata"`
-	AnyElements []Any  `xml:",any"`
+	Attrs       []xml.Attr `xml:",any,attr"`
+	Value       string     `xml:",chardata"`
+	AnyElements []Any      `xml:",any"`
 }
