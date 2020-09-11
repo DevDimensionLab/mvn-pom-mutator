@@ -33,7 +33,18 @@ func Marshall(project *Model) ([]byte, error) {
 		return nil, err
 	}
 
-	whitespaceFix := cleanUnwanted(raw, "&#xA;", "&#x9;", "&#x20;", "&#xD;")
+	rawLines := bytes.Split(raw, []byte("\n"))
+	firstLine := searchAndReplace(rawLines[0],
+		replace{
+			s1: "xsi=",
+			s2: "xmlns:xsi=",
+		},
+		replace{
+			s1: "schemaLocation=",
+			s2: "xsi:schemaLocation=",
+		})
+
+	whitespaceFix := cleanUnwanted(bytes.Join(rawLines[1:], []byte("\n")), "&#xA;", "&#x9;", "&#x20;", "&#xD;")
 	namespaceFix := searchAndReplace(whitespaceFix,
 		replace{
 			s1: " xmlns=\"http://maven.apache.org/POM/4.0.0\"",
@@ -48,7 +59,8 @@ func Marshall(project *Model) ([]byte, error) {
 			s2: "xsi:schemaLocation=",
 		})
 
-	return removeTrailingWhitespace(namespaceFix), nil
+	cleaned := removeTrailingWhitespace(namespaceFix)
+	return append(append(firstLine, []byte("\n")...), cleaned...), nil
 }
 
 func searchAndReplace(content []byte, commands ...replace) []byte {
