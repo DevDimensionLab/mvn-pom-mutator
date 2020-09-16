@@ -217,3 +217,12 @@ func (model *Model) InsertDependency(dep Dependency) {
 
 	model.Dependencies.Dependency = append(model.Dependencies.Dependency, dep)
 }
+
+func (model *Model) GetGroupId() (groupId string) {
+	groupId = model.GroupId
+	if groupId == "" {
+		groupId = model.Parent.GroupId
+	}
+
+	return
+}
