@@ -228,13 +228,13 @@ func (model *Model) GetGroupId() (groupId string) {
 }
 func (model *Model) GetSecondPartyGroupId() (string, error) {
 	if model.GetGroupId() != "" {
-		return getFirstTwoPartsOfGroupId(model.GetGroupId())
+		return GetFirstTwoPartsOfGroupId(model.GetGroupId())
 	}
 
 	return "", errors.New("could not extract 2party groupId")
 }
 
-func getFirstTwoPartsOfGroupId(groupId string) (string, error) {
+func GetFirstTwoPartsOfGroupId(groupId string) (string, error) {
 	parts := strings.Split(groupId, ".")
 
 	if len(parts) <= 1 {
