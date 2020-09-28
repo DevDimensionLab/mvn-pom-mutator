@@ -226,3 +226,20 @@ func (model *Model) GetGroupId() (groupId string) {
 
 	return
 }
+func (model *Model) GetSecondPartyGroupId() (string, error) {
+	if model.GetGroupId() != "" {
+		return getFirstTwoPartsOfGroupId(model.GetGroupId())
+	}
+
+	return "", errors.New("could not extract 2party groupId")
+}
+
+func getFirstTwoPartsOfGroupId(groupId string) (string, error) {
+	parts := strings.Split(groupId, ".")
+
+	if len(parts) <= 1 {
+		return "", errors.New("groupId must at least contain two punctuations")
+	} else {
+		return strings.Join(parts[:2], "."), nil
+	}
+}
