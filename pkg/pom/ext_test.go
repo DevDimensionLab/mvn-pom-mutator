@@ -17,4 +17,3 @@ func TestGetFirstTwoPartsOfGroupId(t *testing.T) {
 		t.Errorf("com got accepted as a at-least-two part group id")
 	}
 }
-

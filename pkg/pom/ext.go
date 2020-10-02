@@ -22,6 +22,9 @@ func (deps Dependencies) FindArtifact(artifactId string) (Dependency, error) {
 func (model *Model) GetDependencyVersion(dep Dependency) (string, error) {
 	if strings.HasPrefix(dep.Version, "${") {
 		versionKey := strings.Trim(dep.Version, "${}")
+		if model.Properties == nil {
+			return "", errors.New(fmt.Sprintf("version points at %s, but no properties are defined", dep.Version))
+		}
 		return model.Properties.FindKey(versionKey)
 	} else {
 		return dep.Version, nil
@@ -31,6 +34,9 @@ func (model *Model) GetDependencyVersion(dep Dependency) (string, error) {
 func (model *Model) GetPluginVersion(plugin Plugin) (string, error) {
 	if strings.HasPrefix(plugin.Version, "${") {
 		versionKey := strings.Trim(plugin.Version, "${}")
+		if model.Properties == nil {
+			return "", errors.New(fmt.Sprintf("version points at %s, but no properties are defined", plugin.Version))
+		}
 		return model.Properties.FindKey(versionKey)
 	} else {
 		return plugin.Version, nil
@@ -40,6 +46,9 @@ func (model *Model) GetPluginVersion(plugin Plugin) (string, error) {
 func (model *Model) SetDependencyVersion(dep Dependency, newVersion string) error {
 	if strings.HasPrefix(dep.Version, "${") {
 		versionKey := strings.Trim(dep.Version, "${}")
+		if model.Properties == nil {
+			return errors.New(fmt.Sprintf("version points at %s, but no properties are defined", dep.Version))
+		}
 		return model.Properties.SetKey(versionKey, newVersion)
 	} else {
 		var found = false
@@ -71,6 +80,9 @@ func SetDependencyVersionElement(dependencies *Dependencies, dep Dependency, new
 func (model *Model) SetPluginVersion(plugin Plugin, newVersion string) error {
 	if strings.HasPrefix(plugin.Version, "${") {
 		versionKey := strings.Trim(plugin.Version, "${}")
+		if model.Properties == nil {
+			return errors.New(fmt.Sprintf("version points at %s, but no properties are defined", plugin.Version))
+		}
 		return model.Properties.SetKey(versionKey, newVersion)
 	} else {
 		for i, d := range model.Build.Plugins.Plugin {
