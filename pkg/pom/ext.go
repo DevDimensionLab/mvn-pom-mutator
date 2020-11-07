@@ -19,6 +19,22 @@ func (deps Dependencies) FindArtifact(artifactId string) (Dependency, error) {
 	return Dependency{}, errors.New("could not find artifact " + artifactId + " in dependencies")
 }
 
+func (deps Dependencies) FindDuplicates() (duplicates []Dependency) {
+	foundDeps := make(map[string]bool)
+
+	depKey := func(dep Dependency) string { return fmt.Sprintf("%s:%s", dep.GroupId, dep.ArtifactId) }
+
+	for _, dep := range deps.Dependency {
+		if foundDeps[depKey(dep)] {
+			duplicates = append(duplicates, dep)
+		} else {
+			foundDeps[depKey(dep)] = true
+		}
+	}
+
+	return
+}
+
 func (model *Model) GetDependencyVersion(dep Dependency) (string, error) {
 	if strings.HasPrefix(dep.Version, "${") {
 		versionKey := strings.Trim(dep.Version, "${}")

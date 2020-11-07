@@ -1,6 +1,7 @@
 package pom_gen
 
 import (
+	"errors"
 	"fmt"
 	"github.com/perottobc/mvn-pom-mutator/pkg/xsd_model"
 	"testing"
@@ -14,12 +15,16 @@ func traverseComplexType(schema *xsd_model.Schema, complexType *xsd_model.Comple
 	}
 }
 
-func traverse(schema *xsd_model.Schema, element xsd_model.Element, pad string) {
+func traverse(schema *xsd_model.Schema, element xsd_model.Element, pad string) error {
 	elementType := element.Type
-	if nil != element.ComplexType.Sequence.Element {
+	if element.ComplexType.Sequence == nil {
+		return errors.New("element.ComplexType.Sequence is nil")
+	}
+
+	if element.ComplexType.Sequence.Element != nil {
 		elementType = element.ComplexType.Sequence.Element.Type
 	}
-	if nil != element.ComplexType.Sequence.Any {
+	if element.ComplexType.Sequence.Any != nil {
 		elementType = "any"
 	}
 
@@ -32,6 +37,8 @@ func traverse(schema *xsd_model.Schema, element xsd_model.Element, pad string) {
 			fmt.Println("\"\" == elementType")
 		}
 	}
+
+	return nil
 }
 
 func TestShouldTraversePomModel(t *testing.T) {
@@ -40,7 +47,10 @@ func TestShouldTraversePomModel(t *testing.T) {
 		t.Error(err)
 	}
 
-	traverse(xsd, xsd.Element, "")
+	err = traverse(xsd, xsd.Element, "")
+	if err != nil {
+		t.Fail()
+	}
 }
 
 func TestShouldWritePomModelGoSrc(t *testing.T) {

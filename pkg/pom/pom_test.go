@@ -15,7 +15,14 @@ func TestShouldReadAndWritePomXml(t *testing.T) {
 
 	fmt.Println(model.ArtifactId)
 
-	xml, _ := Marshall(model)
+	xml, err := Marshall(model)
+	if err != nil {
+		t.Fail()
+	}
 
-	_ = ioutil.WriteFile("../../target/pom.xml", xml, 0644)
+	err = ioutil.WriteFile("../../target/pom.xml", xml, 0644)
+
+	if err != nil {
+		t.Fail()
+	}
 }

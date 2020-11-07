@@ -17,3 +17,19 @@ func TestGetFirstTwoPartsOfGroupId(t *testing.T) {
 		t.Errorf("com got accepted as a at-least-two part group id")
 	}
 }
+
+func TestDependencies_FindDuplicates(t *testing.T) {
+	model, err := GetModelFrom("test/pom.xml")
+	if err != nil {
+		t.Fail()
+	}
+
+	if model != nil {
+		duplicates := model.Dependencies.FindDuplicates()
+		if len(duplicates) != 1 {
+			t.Fail()
+		}
+	} else {
+		t.Fail()
+	}
+}
