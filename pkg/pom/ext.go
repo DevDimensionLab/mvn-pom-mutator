@@ -227,9 +227,19 @@ func (model *Model) RemoveDependency(dep Dependency) error {
 }
 
 func (model *Model) FindDependency(groupId string, artifactId string) (Dependency, error) {
-	for _, dep := range model.Dependencies.Dependency {
-		if dep.GroupId == groupId && dep.ArtifactId == artifactId {
-			return dep, nil
+	if model.Dependencies != nil {
+		for _, dep := range model.Dependencies.Dependency {
+			if dep.GroupId == groupId && dep.ArtifactId == artifactId {
+				return dep, nil
+			}
+		}
+	}
+
+	if model.DependencyManagement != nil && model.DependencyManagement.Dependencies != nil {
+		for _, dep := range model.DependencyManagement.Dependencies.Dependency {
+			if dep.GroupId == groupId && dep.ArtifactId == artifactId {
+				return dep, nil
+			}
 		}
 	}
 
