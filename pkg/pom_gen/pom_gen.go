@@ -3,7 +3,7 @@ package pom_gen
 import (
 	"encoding/xml"
 	"fmt"
-	"github.com/perottobc/mvn-pom-mutator/pkg/xsd_model"
+	"github.com/co-pilot-cli/mvn-pom-mutator/pkg/xsd_model"
 	"io/ioutil"
 	"os"
 	"sort"

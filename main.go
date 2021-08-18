@@ -15,7 +15,7 @@ limitations under the License.
 */
 package main
 
-import "github.com/perottobc/mvn-pom-mutator/cmd"
+import "github.com/co-pilot-cli/mvn-pom-mutator/cmd"
 
 func main() {
 	cmd.Execute()

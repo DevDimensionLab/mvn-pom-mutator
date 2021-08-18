@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/perottobc/mvn-pom-mutator/pkg/pom"
+	"github.com/co-pilot-cli/mvn-pom-mutator/pkg/pom"
 	"github.com/spf13/cobra"
 	"log"
 )
