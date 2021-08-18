@@ -22,7 +22,7 @@ func (deps Dependencies) FindArtifact(artifactId string) (Dependency, error) {
 func (deps Dependencies) FindDuplicates() (duplicates []Dependency) {
 	foundDeps := make(map[string]bool)
 
-	depKey := func(dep Dependency) string { return fmt.Sprintf("%s:%s", dep.GroupId, dep.ArtifactId) }
+	depKey := func(dep Dependency) string { return fmt.Sprintf("%s:%s:%s", dep.GroupId, dep.ArtifactId, dep.Type_) }
 
 	for _, dep := range deps.Dependency {
 		if foundDeps[depKey(dep)] {
