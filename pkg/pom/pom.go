@@ -28,7 +28,7 @@ func GetModelFrom(path string) (*Model, error) {
 }
 
 func Marshall(project *Model) ([]byte, error) {
-	raw, err := xml.MarshalIndent(project, "", "   ")
+	raw, err := xml.MarshalIndent(project, "", "    ")
 	if nil != err {
 		return nil, err
 	}
