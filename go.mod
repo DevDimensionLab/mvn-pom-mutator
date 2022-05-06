@@ -1,4 +1,4 @@
-module github.com/co-pilot-cli/mvn-pom-mutator
+module github.com/devdimensionlab/mvn-pom-mutator
 
 go 1.14
 
