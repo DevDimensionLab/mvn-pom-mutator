@@ -23,7 +23,7 @@ var initCmd = &cobra.Command{
 			log.Fatalln(err)
 		}
 
-		err = model.WriteToFile(fmt.Sprintf("%s/pom.xml", targetDirectory))
+		err = model.WriteToFile(fmt.Sprintf("%s/pom.xml", targetDirectory), "    ")
 
 		if err != nil {
 			log.Fatalln(err)
