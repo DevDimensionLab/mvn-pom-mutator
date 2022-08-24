@@ -201,8 +201,8 @@ func (any *Any) AddKey(key string, value string) error {
 	return nil
 }
 
-func (model *Model) WriteToFile(outputFile string, indent string) error {
-	bytes, err := Marshall(model, indent)
+func (model *Model) WriteToFile(outputFile string, indent string, clean bool) error {
+	bytes, err := Marshall(model, indent, clean)
 	if err != nil {
 		return err
 	}

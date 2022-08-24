@@ -27,7 +27,7 @@ func GetModelFrom(path string) (*Model, error) {
 	return &model, nil
 }
 
-func Marshall(project *Model, indent string) ([]byte, error) {
+func Marshall(project *Model, indent string, clean bool) ([]byte, error) {
 	raw, err := xml.MarshalIndent(project, "", indent)
 	if nil != err {
 		return nil, err
@@ -35,17 +35,6 @@ func Marshall(project *Model, indent string) ([]byte, error) {
 
 	rawLines := bytes.Split(raw, []byte("\n"))
 	firstLine := searchAndReplace(rawLines[0],
-		replace{
-			s1: "xsi=",
-			s2: "xmlns:xsi=",
-		},
-		replace{
-			s1: "schemaLocation=",
-			s2: "xsi:schemaLocation=",
-		})
-
-	whitespaceFix := cleanUnwanted(bytes.Join(rawLines[1:], []byte("\n")), "&#xA;", "&#x9;", "&#x20;", "&#xD;")
-	namespaceFix := searchAndReplace(whitespaceFix,
 		replace{
 			s1: " xmlns=\"http://maven.apache.org/POM/4.0.0\"",
 			s2: "",
@@ -58,9 +47,13 @@ func Marshall(project *Model, indent string) ([]byte, error) {
 			s1: "schemaLocation=",
 			s2: "xsi:schemaLocation=",
 		})
+	content := bytes.Join(rawLines[1:], []byte("\n"))
 
-	cleaned := removeTrailingWhitespace(namespaceFix)
-	return append(append(firstLine, []byte("\n")...), cleaned...), nil
+	if clean {
+		content = removeTrailingWhitespace(cleanUnwanted(content, "&#xA;", "&#x9;", "&#x20;", "&#xD;"))
+	}
+
+	return append(append(firstLine, []byte("\n")...), content...), nil
 }
 
 func searchAndReplace(content []byte, commands ...replace) []byte {
