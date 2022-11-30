@@ -15,7 +15,7 @@ func TestShouldReadAndWritePomXml(t *testing.T) {
 
 	fmt.Println(model.ArtifactId)
 
-	xml, err := Marshall(model, true)
+	xml, err := Marshall(model)
 	if err != nil {
 		t.Fail()
 	}
