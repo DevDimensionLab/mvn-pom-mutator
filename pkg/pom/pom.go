@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"encoding/xml"
 	"io"
-	"io/ioutil"
 	"os"
 	"strings"
 )
@@ -17,7 +16,7 @@ func GetModelFrom(path string) (*Model, error) {
 	}
 
 	defer xmlFile.Close()
-	data, _ := ioutil.ReadAll(xmlFile)
+	data, _ := io.ReadAll(xmlFile)
 
 	model := Model{}
 	err = xml.Unmarshal(data, &model)

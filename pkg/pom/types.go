@@ -155,8 +155,8 @@ type Dependency struct {
 
 type Exclusion struct {
 	Comment    string `xml:",comment"`
-	ArtifactId string `xml:"artifactId,omitempty"`
 	GroupId    string `xml:"groupId,omitempty"`
+	ArtifactId string `xml:"artifactId,omitempty"`
 }
 
 type Parent struct {
